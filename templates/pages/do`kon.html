@@ -1,0 +1,275 @@
+{% load static %}
+<!--<!DOCTYPE html>-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do`kon</title>
+    <link rel="shortcut icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/media.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+<div id="popup" class="popup"></div>
+<div class="sidebar">
+    <a href="#" class="logo">
+        <i class='bx bxs-zap'></i>
+        <div class="logo-name"><span>Asil</span>Elektro</div>
+    </a>
+    <ul class="side-menu side-menu-1">
+        <li class="active" data-name="dokon"><a href="#"><i class='bx bx-store-alt'></i>Do`kon</a></li>
+        <li data-name="maxsulot"><a href="#"><i class='bx bx-package'></i>Maxsulotlar</a></li>
+        <li data-name="zakazlar"><a href="#"><i class='bx bx-group'></i>Zakazlar</a></li>
+        <li data-name="etirozlar"><a href="#"><i class='bx bx-message-square-dots'></i>Etiroz</a></li>
+    </ul>
+    <ul class="side-menu">
+        <li>
+            <a href="{% url 'login' %}" class="logout">
+                <i class='bx bx-log-out-circle'></i>
+                Logout
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="content">
+    <!-- Navbar -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <form action="#"></form>
+        <input type="checkbox" id="theme-toggle" hidden>
+        <label for="theme-toggle" class="theme-toggle"></label>
+        <a href="#" class="profile">
+            <img src="{% static 'images/logo.png' %}">
+        </a>
+    </nav>
+
+
+    <main data-name="dokon">
+        <div class="bottom-data">
+            <div class="orders">
+                <div class="header">
+                    <i class='bx bx-receipt'></i>
+                    <h3>Maxsulotlar</h3>
+                    <input type="text" placeholder="Qidirish">
+                </div>
+                <form action="" method="post" enctype="multipart/form-data" class="form">
+                    {% csrf_token %}
+                    <table id="myTable1">
+                        <thead>
+                        <tr>
+                            <th>Nomi</th>
+                            <th>Narxi (dona/metr)</th>
+                            <th>Soni</th>
+                            <th>Jami</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for maxsulot in maxsulot_list %}
+                        <tr data-name="{{ maxsulot.maxsulot_nomi|lower }}">
+                            <td>{{ maxsulot.maxsulot_nomi|capfirst }}</td>
+                            <td>{{ maxsulot.foiz_narxi }}</td>
+                            <td>
+                                <input type="number" data-product="{{maxsulot.id}}" name="soni_{{ maxsulot.id }}"
+                                       min="1">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="footer">
+                        <button type="submit">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <main data-name="maxsulot" class="hide">
+        <div class="bottom-data">
+            <div class="orders">
+                <div class="header">
+                    <i class='bx bx-receipt'></i>
+                    <h3>Maxsulotlar</h3>
+                    <p data-label="maxsulot" class="add-button add-btn big">+ Maxsulot qo`shish</p>
+                    <!-- <p class="add-button minus-btn big">- Maxsulot ayirish</p> -->
+                    <p data-label="maxsulot" class="add-button add-btn small">+</p>
+                    <!-- <p class="add-button minus-btn small">-</p> -->
+                </div>
+                <table id="myTable3">
+                    <thead>
+                    <tr>
+                        <th>Nomi</th>
+                        <th>Asil narxi (dona/metr)</th>
+                        <th>Ustama %</th>
+                        <th>Sotuvdagi narxi (dona/metr)</th>
+                        <th>Soni / o`lchami</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for maxsulot in maxsulot_list %}
+                    <tr>
+                        <td>{{ maxsulot.maxsulot_nomi|capfirst }}</td>
+                        <td>{{ maxsulot.narxi }}so`m</td>
+                        <td>{{ maxsulot.foiz }}%</td>
+                        <td>{{ maxsulot.foiz_narxi }}</td>
+                        <td>{{ maxsulot.soni }}ta</td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <main data-name="zakazlar" class="hide">
+        <ul class="loyihalar">
+            {% for zakaz in zakaz_list %}
+            <li>
+                <div class="names_status">
+                    <h3 class="name">{{ zakaz.obyekt_nomi|capfirst }}</h3>
+                    <small class="user_status">
+                        <i class='bx bx-chevron-down'></i>
+                    </small>
+                </div>
+                <div class="sms">
+                    <ul class="maxsulotlar">
+                        {% for maxsulot in maxsulot_list %}
+                        <li>
+                            <div class="name">{{ maxsulot.maxsulot_nomi|capfirst }}</div>
+                            <div class="narxi">
+                                <p>{{ maxsulot.narxi }}</p>so`m
+                            </div>
+                            <div class="umumiy">
+                                <p>{{ maxsulot.soni }}</p>ta
+                            </div>
+                            <div class="soni">
+                                <span class="minus"><</span>
+                                <span class="input"><input type="number" value="0"></span>
+                                <span class="plus">></span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <button type="submit" class="start">Jo`natish</button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+
+    <main data-name="etirozlar" class="page hide" id="call">
+        <h2>Telefon raqam:</h2>
+        <div class="box">
+            <a href="tel:+998905338628">+998905338628</a>
+            <a href="tel:+998996328899">+998996328899</a>
+        </div>
+        <h2>Dasturdan yozish:</h2>
+        <form action="#" class="box" method="post">{% csrf_token %}
+            <input hidden type="text" name="ism" value="Abror">
+            <input hidden type="text" name="titul" value="Do`kon">
+            <textarea name="text" placeholder="Shu yerga yozing..."></textarea>
+            <button type="submit">Jo`natish</button>
+        </form>
+    </main>
+</div>
+
+<div class="add_box_container">
+    <div class="add_box" data-label="maxsulot">
+        <div class="title">
+            <i class='bx bx-group'></i>
+            <h2>Maxsulot qo`shish</h2>
+        </div>
+        <form action="#" class="info" method="post">{% csrf_token %}
+            <div class="box-wrapper">
+                <div class="input-box">
+                    <label for="maxsulot_nomi">Nomini kiritng:</label>
+                    <input type="text" id="maxsulot_nomi" name="maxsulot_nomi">
+                </div>
+                <div class="input-box">
+                    <label for="narxi">(dona/metr/kg)narxini kiritng:</label>
+                    <input type="text" id="narxi" name="narxi">
+                </div>
+                <div class="input-box">
+                    <label for="foiz">% kiritng:</label>
+                    <input type="text" id="foiz" name="foiz">
+                </div>
+                <div class="input-box">
+                    <label for="foiz_narxi">% narxini kiritng:</label>
+                    <input type="text" id="foiz_narxi" name="foiz_narxi">
+                </div>
+                <div class="input-box">
+                    <label for="how">Sonini kiritng:</label>
+                    <input type="number" id="how" name="soni">
+                </div>
+            </div>
+            <button type="submit" class="save">Saqlash</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/library.js' %}"></script>
+<script>
+    TP.setup("myTable1", "popup");
+    TP.setup("myTable2", "popup");
+    TP.sort("myTable1", 0);
+    TP.sort("myTable2", 0);
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Находим элементы таблицы
+    var table = document.getElementById('myTable3');
+    var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    // Проходим по каждой строке таблицы
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+
+        // Получаем значения foiz-narxi и soni
+        var foizNarxi = parseFloat(row.querySelector('[data-active="foiz-narxi"]').innerText.replace('so`m', '').trim());
+        var soni = parseFloat(row.querySelector('[data-active="soni"]').innerText.replace('ta', '').trim());
+
+        // Вычисляем summa
+        var summa = foizNarxi * soni;
+
+        // Вставляем результат в data-active="summa"
+        row.querySelector('[data-active="summa"]').innerText = summa + 'so`m';
+    }
+
+    var narxiInput = document.getElementById('narxi');
+    var foizInput = document.getElementById('foiz');
+    var foizNarxiInput = document.getElementById('foiz_narxi');
+
+    // Обработчик события ввода для полей narxi и foiz
+    narxiInput.addEventListener('input', updateFoizNarxi);
+    foizInput.addEventListener('input', updateFoizNarxi);
+
+    function updateFoizNarxi() {
+        // Получаем значения narxi и foiz
+        var narxiValue = parseFloat(narxiInput.value) || 0;
+        var foizValue = parseFloat(foizInput.value) || 0;
+
+        // Вычисляем новое значение foiz_narxi
+        var foizNarxiValue = narxiValue * ((100 + foizValue) / 100);
+
+        // Устанавливаем новое значение в поле foiz_narxi
+        foizNarxiInput.value = foizNarxiValue.toFixed(2);
+    }
+});
+</script>
+<script src="{% static 'js/variables.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script defer src="{% static 'js/animate.js' %}"></script>
+<script defer src="{% static 'js/dokon.js' %}"></script>
+</body>
+
+</html>
